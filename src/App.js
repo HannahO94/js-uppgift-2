@@ -1,24 +1,38 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import { Switch, Route } from "react-router-dom";
+import "./App.css";
+
+import Register from "./components/Register";
+import CustomerList from "./components/CustomerList";
+import LoginPage from "./pages/LoginPage";
+import CustomerDetailPage from "./pages/CustomerDetailPage";
+import UserConstext from "./contexts/UserContext";
+import ChangeCustomer from "./components/ChangeCustomer";
 
 function App() {
+  const [user, setUser] = useState(null);
+  const [customerList, setCustomerList] = useState(null);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <UserConstext.Provider
+        value={{ user, setUser, customerList, setCustomerList }}
+      >
+        <Switch>
+          <Route path="/customer/:id" component={CustomerDetailPage} />
+          <Route path="/edit-customer/:id" component={ChangeCustomer} />
+
+          <Route path="/home">
+            <CustomerList />
+          </Route>
+          <Route path="/login">
+            <LoginPage />
+          </Route>
+          <Route path="/">
+            <Register />
+          </Route>
+        </Switch>
+      </UserConstext.Provider>
     </div>
   );
 }
