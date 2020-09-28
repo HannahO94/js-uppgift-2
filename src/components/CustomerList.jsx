@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 
 import styled from "styled-components";
@@ -7,78 +7,86 @@ import UserKit from "../data/UserKit";
 import NewCustomer from "./NewCustomer";
 
 export default function CustomerList() {
-  //   const [customerList, setCustomerList] = useState([]);
   const userKit = new UserKit();
-  const { user, setUser, customerList, setCustomerList } = useContext(
-    UserConstext
-  );
-
-  function getUser() {
-    userKit
-      .getUser()
-      .then((res) => res.json())
-      .then((data) => {
-        setUser(data);
-      });
-  }
+  const { customerList, setCustomerList } = useContext(UserConstext);
 
   function getCustomerList() {
     userKit
       .getCustomerList()
       .then((res) => res.json())
       .then((data) => {
-        setCustomerList(data.results);
-        console.log(data.results);
+        data.count === 0
+          ? setCustomerList(null)
+          : setCustomerList(data.results);
       });
   }
 
   useEffect(() => {
-    getUser();
     getCustomerList();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
   return (
-    <div>
-      <p>{user && user.email}</p>
-      <p>
-        {user && user.firstName} {user && user.lastName}
-      </p>
-
+    <GridWrapper>
       <PageWrapper>
-        <NewCustomer getCustomerList={getCustomerList} />
-        <h2>Customer List</h2>
-        {customerList &&
+        <H2>Customers</H2>
+
+        {customerList === null ? (
+          <p>You have no customers</p>
+        ) : (
           customerList.map((customer, i) => {
             return (
               <CustomerWrapper key={i}>
-                <Link to={`customer/${customer.id}`}>
+                <LinkItem to={`customer/${customer.id}`}>
                   <Text>{customer.name}</Text>
-                </Link>
+                </LinkItem>
+
                 <p>Org Nr: {customer.organisationNr}</p>
                 <p>Reference: {customer.reference}</p>
               </CustomerWrapper>
             );
-          })}
+          })
+        )}
       </PageWrapper>
-    </div>
+      <NewCustomer getCustomerList={getCustomerList} />
+    </GridWrapper>
   );
 }
+const GridWrapper = styled.div`
+  display: grid;
+  grid-template-columns: 60% 40%;
+  margin: 0;
+  @media (max-width: 768px) {
+    grid-template-columns: 100%;
+  }
+`;
 
 const PageWrapper = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
 `;
+const H2 = styled.h2`
+  margin-bottom: 30px;
+`;
 
-const CustomerWrapper = styled.div`
-  display: flex;
+const CustomerWrapper = styled(PageWrapper)`
+  width: 35vw;
   flex-wrap: wrap;
-  flex-direction: column;
+  align-items: start;
+  padding: 12px;
+
+  border: 1px solid #d7d7d7;
+  border-radius: 6px;
   p {
+    box-sizing: border-box;
     margin: 5px;
   }
 `;
-const Text = styled.p`
+const LinkItem = styled(Link)`
+  text-decoration: none;
+  color: black;
+`;
+const Text = styled.h2`
+  width: 100%;
   font-size: 20px;
 `;

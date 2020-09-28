@@ -57,6 +57,12 @@ export default class {
       headers: this.getPrivateheaders(),
     });
   }
+  async getCustomer(id) {
+    const url = `${ROOT_URL}api/v1/customers/${id}/`;
+    return fetch(url, {
+      headers: this.getPrivateheaders(),
+    });
+  }
 
   async createCustomer(payload) {
     const url = `${ROOT_URL}api/v1/customers`;
@@ -67,16 +73,18 @@ export default class {
     });
   }
   async deleteCustomer(id) {
-    const url = `${ROOT_URL}api/v1/customers/${id}`;
+    const url = `${ROOT_URL}api/v1/customers/${id}/`;
     return fetch(url, {
       method: "DELETE",
       headers: this.getPrivateheaders(),
     });
   }
-  async changeCustomer(id) {
-    const url = `${ROOT_URL}api/v1/customers/${id}`;
+  async changeCustomer(id, payload) {
+    const url = `${ROOT_URL}api/v1/customers/${id}/`;
     return fetch(url, {
+      method: "PATCH",
       headers: this.getPrivateheaders(),
+      body: JSON.stringify(payload),
     });
   }
 

@@ -9,6 +9,7 @@ export default function Register() {
   const [password, setPassword] = useState("");
   const [organisationName, setOrganisationName] = useState("");
   const [organisationKind, setOrganisationKind] = useState("");
+  const [message, setMessage] = useState("");
 
   const userKit = new UserKit();
 
@@ -21,6 +22,7 @@ export default function Register() {
       organisationName,
       organisationKind
     );
+    setMessage("Check your email");
   }
   function renderInput(label, placeholder, stateVariable, stateSetVariable) {
     return (
@@ -62,12 +64,12 @@ export default function Register() {
       )}
 
       <Button onClick={handleRegister}>Register</Button>
+      <h3>{message}</h3>
     </PageWrapper>
   );
 }
 const PageWrapper = styled.div`
   width: 100%;
-  font-family: sans-serif;
   display: flex;
   flex-direction: column;
   justify-content: center;
