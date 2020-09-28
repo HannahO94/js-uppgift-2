@@ -17,6 +17,7 @@ export default function NewCustomer({ getCustomerList }) {
   const userKit = new UserKit();
 
   function handleCreateUser() {
+    setErrorMessage("");
     if (validateVatNr(vatNr)) {
       const payload = {
         name: customer,
@@ -91,7 +92,7 @@ export default function NewCustomer({ getCustomerList }) {
           organisationNumber,
           setOrganisationNumber
         )}
-        {renderInput("Vat Number", "Vat nr", vatNr, setVatNr)}
+        {renderInput("Vat Number", "SE0000000000", vatNr, setVatNr)}
         <WarningP>{errorMessage}</WarningP>
         {renderInput("Reference", "Reference", reference, setReference)}
         {renderInput("Payment Term", "ex. 30", paymentTerm, setPaymentTerm)}

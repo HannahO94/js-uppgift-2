@@ -24,10 +24,33 @@ export default function LayoutSimple({ children }) {
     history.push("/login");
     setUser(null);
   }
+  function navListRender() {
+    return (
+      <ul>
+        <li>
+          {user === null || user === undefined ? (
+            <LinkItem to="/login">Login</LinkItem>
+          ) : (
+            <LinkItem to="/home">Home</LinkItem>
+          )}
+        </li>
+        <li>
+          {user === null || user === undefined ? (
+            <LinkItem to="/register">Register</LinkItem>
+          ) : (
+            <PLink onClick={logout}>Logout</PLink>
+          )}
+        </li>
+      </ul>
+    );
+  }
 
   useEffect(() => {
     setUser(getUser());
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    navListRender();
+  }, [user]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Div>

@@ -64,7 +64,7 @@ export default function Register() {
       )}
 
       <Button onClick={handleRegister}>Register</Button>
-      <h3>{message}</h3>
+      {/* <h3>{message}</h3> */}
     </PageWrapper>
   );
 }

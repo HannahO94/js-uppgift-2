@@ -3,7 +3,6 @@ import { Link, useHistory } from "react-router-dom";
 
 import styled from "styled-components";
 import UserKit from "../data/UserKit";
-import UserOnline from "./UserOnline";
 
 export default function ChangeCustomer(props) {
   const [customerDetail, setCustomerDetail] = useState([]);
@@ -15,6 +14,7 @@ export default function ChangeCustomer(props) {
   const [website, setWebsite] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const userKit = new UserKit();
   const history = useHistory();
   const id = props.match.params.id;
@@ -28,32 +28,45 @@ export default function ChangeCustomer(props) {
       });
   }
   function changeCustomer() {
-    const payload = {
-      name: customer === "" ? customerDetail.name : customer,
-      organisationNr:
-        organisationNumber === ""
-          ? customerDetail.organisationNr
-          : organisationNumber,
-      vatNr: vatNr === "" ? customerDetail.vatNr : vatNr,
-      reference: reference === "" ? customerDetail.reference : reference,
-      paymentTerm:
-        paymentTerm === "" ? customerDetail.paymentTerm : paymentTerm,
-      website: website === "" ? customerDetail.website : website,
-      email: email === "" ? customerDetail.email : email,
-      phoneNumber: phone === "" ? customerDetail.phoneNumber : phone,
-    };
-    console.log(payload);
-    console.log(id);
-    userKit
-      .changeCustomer(id, payload)
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        history.push(`/customer/${id}`);
-      });
+    setErrorMessage("");
+    if (validateVatNr(customerDetail.vatNr)) {
+      const payload = {
+        name: customer === "" ? customerDetail.name : customer,
+        organisationNr:
+          organisationNumber === ""
+            ? customerDetail.organisationNr
+            : organisationNumber,
+        vatNr: vatNr === "" ? customerDetail.vatNr : vatNr,
+        reference: reference === "" ? customerDetail.reference : reference,
+        paymentTerm:
+          paymentTerm === "" ? customerDetail.paymentTerm : paymentTerm,
+        website: website === "" ? customerDetail.website : website,
+        email: email === "" ? customerDetail.email : email,
+        phoneNumber: phone === "" ? customerDetail.phoneNumber : phone,
+      };
+
+      userKit
+        .changeCustomer(id, payload)
+        .then((res) => res.json())
+        .then((data) => {
+          history.push(`/customer/${id}`);
+        });
+    } else {
+      setErrorMessage("Not a valid vat number");
+    }
   }
 
-  console.log(customer);
+  function validateVatNr(vatNr) {
+    console.log(vatNr);
+    let reg = /\d{10}/g;
+    if (vatNr.includes("SE", 0) && vatNr.match(reg) && vatNr.length === 12) {
+      console.log("match");
+      return true;
+    } else {
+      console.log("no match");
+      return false;
+    }
+  }
   useEffect(() => {
     getCustomerList();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -89,6 +102,7 @@ export default function ChangeCustomer(props) {
             onChange={(e) => setVatNr(e.target.value)}
           />
         </InputWrapper>
+        <WarningP>{errorMessage}</WarningP>
         <InputWrapper>
           <label>Reference: </label>
           <Input
@@ -134,12 +148,7 @@ export default function ChangeCustomer(props) {
     </Div>
   );
 }
-const Div = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
+
 const InputWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -147,6 +156,10 @@ const InputWrapper = styled.div`
     margin: 5px;
     margin-bottom: 2px;
   }
+`;
+const Div = styled(InputWrapper)`
+  width: 100%;
+  align-items: center;
 `;
 const PageWrapper = styled(InputWrapper)`
   width: 20%;
@@ -186,4 +199,7 @@ const LinkItem = styled(Link)`
   margin: 15px 50px;
   cursor: pointer;
   box-sizing: border-box;
+`;
+const WarningP = styled.p`
+  color: red;
 `;

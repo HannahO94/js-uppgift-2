@@ -5,6 +5,7 @@ import styled from "styled-components";
 import UserConstext from "../contexts/UserContext";
 import UserKit from "../data/UserKit";
 import NewCustomer from "./NewCustomer";
+import UserOnline from "./UserOnline";
 
 export default function CustomerList() {
   const userKit = new UserKit();
@@ -26,6 +27,7 @@ export default function CustomerList() {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
   return (
     <GridWrapper>
+      <UserOnline />
       <PageWrapper>
         <H2>Customers</H2>
 
